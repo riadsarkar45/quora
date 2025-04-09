@@ -13,6 +13,17 @@ class DataFetcher {
         }
     }
 
+    async fetchRelationalData(query) {
+        if (!query) {
+            throw new Error('something is critically wrong routes/users.js line 18');
+        }
+        try {
+            return await this.db.relationalQuery(query);
+        } catch (e) {
+            throw e;
+        }
+    }
+
     async checkDataExistOrNot(tableName, columnToCheck, checkValue) {
         if (!tableName || !columnToCheck || checkValue === undefined) {
             throw new Error('Missing required parameters: tableName, columnToCheck, or checkValue');

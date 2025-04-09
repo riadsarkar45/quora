@@ -37,6 +37,23 @@ class Database {
         }
     }
 
+    async relationalQuery(query, params) {
+        if (!query && !params) {
+            throw new Error('Something is wrong with relationalQuery function argument called query');
+        }
+    
+        try {
+            const client = await this.pool.connect();
+            const res = await client.query(query, params);
+            client.release();
+            return res.rows;
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+    
+
     async disconnect() {
         try {
             await this.pool.end();

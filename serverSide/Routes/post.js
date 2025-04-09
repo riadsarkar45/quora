@@ -25,7 +25,6 @@ insert.post("/insert", async (req, res) => {
 
 insert.get('/posts', async(req, res) => {
     const getPost = await dataInserter.fetchData('SELECT * FROM questions', []);
-    console.log(getPost);
     res.json(getPost)
 })
 
