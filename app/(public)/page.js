@@ -7,22 +7,26 @@ import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { InsertContext } from "../components/hooks/InsertPost";
+import { AuthContext } from "../components/hooks/AuthProvider";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const { fetchApi, fetchedData } = useContext(InsertContext)
+  const {user}  = useContext(AuthContext)
+  console.log(user?.uid);
 
   useEffect(() => {
+    if(!user?.uid) return;
     setPosts(fetchedData);
     console.log(fetchedData);
     if (!fetchedData || fetchedData.length === 0) {
-      fetchApi('api/posts');
+      fetchApi(`/api/followed-user-posts/${user?.uid}`);
     }
 
-  }, [fetchApi, fetchedData])
-
+  }, [fetchApi, fetchedData, user?.uid])
+console.log(posts, 'new changed api');
   const backendServerUrl = 'http://localhost:3001';
 
   useEffect(() => {

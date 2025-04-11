@@ -3,7 +3,7 @@ import { InsertContext } from "./hooks/InsertPost";
 
 const Posts = ({ post }) => {
     const {dataInsert} = useContext(InsertContext)
-    const { title, body, date, question, userId } = post || {};
+    const { title, body, date, question, userId, userName } = post || {};
     const handleFollow = async (userId) => {
         console.log(userId);
         if(!userId){
@@ -24,7 +24,7 @@ const Posts = ({ post }) => {
                             <div className="flex items-center gap-3 ">
                                 <h2 className="bg-black rounded-lg h-[3rem] w-[3rem] text-white flex items-center justify-center">PIC</h2>
                                 <div>
-                                    <h2 className="text-[1.3rem]">Riad Sarkar</h2>
+                                    <h2 className="text-[1.3rem]">{userName}</h2>
                                     <h2 className="text-[1.1rem]">{date}</h2>
                                     <h2 onClick={() => handleFollow(userId)} className="text-[1.1rem]">Follow</h2>
 

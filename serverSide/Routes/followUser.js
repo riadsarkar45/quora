@@ -20,13 +20,12 @@ followingUsersPost.get('/followed-user-posts/:id', async (req, res) => {
             const questionsWithUserData = Promise.all(
                 following?.map(async(user) => {
                     const userData = await fetch.fetchRelationalData('SELECT name FROM users WHERE "userId" = $1', [user?.userId])
-                    console.log(userData);
                     return {
                         ...user,
-                        userName: userData[1] || "Undefined",
+                        userName: userData[0]?.name || "Undefined",
+                        follow: "Following",
                     }
                 })
-
                 
             )
             return questionsWithUserData;
