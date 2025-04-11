@@ -2,10 +2,11 @@
 import { useContext, useState } from "react";
 import { InsertContext } from './hooks/InsertPost';
 import { AuthContext } from "./hooks/AuthProvider";
+import Link from "next/link";
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { dataInsert, setDataToInsert } = useContext(InsertContext)
-    const {user} = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
     const postText = (e) => {
         const insertion = {
             text: e,
@@ -51,11 +52,13 @@ const Header = () => {
                         </button>
                     </div>
                     <div >
-                        <button
-                            className="px-4 py-2 font-semibold border bg-white rounded-lg hover:bg-blue-100 text-gray-900"
-                        >
-                            Login
-                        </button>
+                        <Link href={'/login'}>
+                            <button
+                                className="px-4 py-2 font-semibold border bg-white rounded-lg hover:bg-blue-100 text-gray-900"
+                            >
+                                Login
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </div>

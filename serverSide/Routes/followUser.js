@@ -3,18 +3,37 @@ const DataFetcher = require("../controllers/Users/users");
 const followingUsersPost = express.Router();
 const fetch = new DataFetcher();
 
-followingUsersPost.get('/followed-user-posts', async (req, res) => {
+followingUsersPost.get('/followed-user-posts/:id', async (req, res) => {
     try {
-        const followers = await fetch.fetchData('SELECT * FROM followers', []);
+        if (!req.params.id) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+        const followers = await fetch.fetchData('SELECT * FROM followers WHERE "followerId" = $1', [req.params.id]);
+        if (!followers.length) {
+            return res.status(404).json({ error: 'No followers found' });
+        }
         const postsPromises = followers.map(async (follower) => {
-            const post1 = await fetch.fetchRelationalData('SELECT * FROM questions ');
-            const post2 = await fetch.fetchRelationalData('SELECT * FROM questions ');
-            const post3 = await fetch.fetchRelationalData('SELECT * FROM questions ');
-            return { post1, post2, post3 };
-        });
-        const allPosts = await Promise.all(postsPromises)
-        const flatPosts = allPosts.flat();
+            const following = await fetch.fetchRelationalData(
+                'SELECT * FROM questions WHERE "userId" = $1',
+                [follower?.followingId]
+            );
+            const questionsWithUserData = Promise.all(
+                following?.map(async(user) => {
+                    const userData = await fetch.fetchRelationalData('SELECT name FROM users WHERE "userId" = $1', [user?.userId])
+                    console.log(userData);
+                    return {
+                        ...user,
+                        userName: userData[1] || "Undefined",
+                    }
+                })
 
+                
+            )
+            return questionsWithUserData;
+        });
+        const allPosts = await Promise.all(postsPromises);
+        const flatPosts = allPosts.flat(); 
+        console.log(flatPosts, 'questions');
         res.send(flatPosts);
 
     } catch (e) {
@@ -23,20 +42,21 @@ followingUsersPost.get('/followed-user-posts', async (req, res) => {
     }
 });
 
+
 followingUsersPost.post('/follow-user/:userId', async (req, res) => {
     if (!req.params) {
         return res.send({ msg: 'Something went wrong. Please try again later.' })
     }
     try {
         const dataToInsert = {
-            followedUserId: 'followedUserId',
-            followingUserId: 'clicked to follow user account id',
+            followingId: 'clicked user id',
+            followerId: 'logged in user id',
             followedAt: new Date(),
         }
         const insert = fetch.insertData('followers', dataToInsert)
-        if(insert){
+        if (insert) {
             console.log('follow successful');
-            return res.send({msg: 'Following you will receive posts in your feed.'})
+            return res.send({ msg: 'Following you will receive posts in your feed.' })
         }
     } catch (e) {
         throw e;

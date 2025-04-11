@@ -1,5 +1,19 @@
-const Posts = ({post}) => {
-    const {title, body, date, question} = post || {};
+import { useContext } from "react";
+import { InsertContext } from "./hooks/InsertPost";
+
+const Posts = ({ post }) => {
+    const {dataInsert} = useContext(InsertContext)
+    const { title, body, date, question, userId } = post || {};
+    const handleFollow = async (userId) => {
+        console.log(userId);
+        if(!userId){
+            console.log('userId is not defined');
+            return;
+        }
+
+        await dataInsert(`/api/follow-user/${userId}`);
+        console.log('lets see the backend worked or not');
+    }
     return (
         <div className="w-[40rem] ">
             <div className="mb-3 rounded-3  bg-gray-50 border p-4 rounded-md">
@@ -12,6 +26,7 @@ const Posts = ({post}) => {
                                 <div>
                                     <h2 className="text-[1.3rem]">Riad Sarkar</h2>
                                     <h2 className="text-[1.1rem]">{date}</h2>
+                                    <h2 onClick={() => handleFollow(userId)} className="text-[1.1rem]">Follow</h2>
 
                                 </div>
                             </div>
@@ -50,7 +65,7 @@ const Posts = ({post}) => {
                             </button>
                             <span>|</span>
                             <button className=" rounded-lg">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25"viewBox="0 0 24 24" fill="#616161">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" viewBox="0 0 24 24" fill="#616161">
                                     <path d="M6 9L12 15L18 9" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </button>

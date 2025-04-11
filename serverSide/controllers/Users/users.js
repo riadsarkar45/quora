@@ -13,12 +13,12 @@ class DataFetcher {
         }
     }
 
-    async fetchRelationalData(query) {
+    async fetchRelationalData(query, params) {
         if (!query) {
             throw new Error('something is critically wrong routes/users.js line 18');
         }
         try {
-            return await this.db.relationalQuery(query);
+            return await this.db.relationalQuery(query, params);
         } catch (e) {
             throw e;
         }
