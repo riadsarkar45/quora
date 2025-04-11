@@ -12,7 +12,7 @@ insert.post("/insert", async (req, res) => {
             question: text,
             status: 'OFF'
         }
-        
+
         const insert = dataInserter.insertData('questions', data)
         if (insert) {
             console.log('Question added successfully ');
@@ -22,5 +22,26 @@ insert.post("/insert", async (req, res) => {
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 });
+
+insert.post("/react-post/:type/:postId/:userId", async (req, res) => {
+    const reactType = req.params.type;
+    const postId = req.params.postId;
+    const userId = req.params.userId;
+    if (!reactType || !postId || !userId) {
+        return res.send({ msg: 'Something went wrong. Please try again later.' })
+    }
+    if (reactType !== 'like' || reactType !== 'dislike') {
+        return res.send('Unauthorized access request.')
+    }
+    const dataToInsert = {
+        postId: postId,
+        userId: userId,
+        likedAt: new Date(),
+    }
+    const insert = dataInserter.insertData('likes', dataToInsert)
+    if (insert) {
+        res.send({ msg: 'Thank you for your interaction' })
+    }
+})
 
 module.exports = insert;
