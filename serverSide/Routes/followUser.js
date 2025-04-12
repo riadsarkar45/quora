@@ -8,18 +8,18 @@ followingUsersPost.get('/followed-user-posts/:id', async (req, res) => {
         if (!req.params.id) {
             return res.status(400).json({ error: 'User ID is required' });
         }
-        const followers = await fetch.fetchData('SELECT * FROM followers WHERE "followerId" = $1', [req.params.id]);
+        const followers = await fetch.fetchData('SELECT * FROM followers WHERE "followerId" = $1 ORDER BY RANDOM()', [req.params.id]);
         if (!followers.length) {
-            return res.status(404).json({ error: 'No followers found' });
+            return res.status(404).json({ error: 'No posts available for you now.' });
         }
         const postsPromises = followers.map(async (follower) => {
             const following = await fetch.fetchRelationalData(
-                'SELECT * FROM questions WHERE "userId" = $1',
+                'SELECT * FROM questions WHERE "userId" = $1 ORDER BY RANDOM()',
                 [follower?.followingId]
             );
             const questionsWithUserData = Promise.all(
                 following?.map(async(user) => {
-                    const userData = await fetch.fetchRelationalData('SELECT name FROM users WHERE "userId" = $1', [user?.userId])
+                    const userData = await fetch.fetchRelationalData('SELECT name FROM users WHERE "userId" = $1 ORDER BY RANDOM()', [user?.userId])
                     return {
                         ...user,
                         userName: userData[0]?.name || "Undefined",

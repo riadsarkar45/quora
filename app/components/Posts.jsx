@@ -2,17 +2,22 @@ import { useContext } from "react";
 import { InsertContext } from "./hooks/InsertPost";
 
 const Posts = ({ post }) => {
-    const {dataInsert} = useContext(InsertContext)
-    const { title, body, date, question, userId, userName } = post || {};
+    const { dataInsert } = useContext(InsertContext)
+    const { title, body, date, question, userId, userName, id } = post || {};
     const handleFollow = async (userId) => {
         console.log(userId);
-        if(!userId){
+        if (!userId) {
             console.log('userId is not defined');
             return;
         }
 
         await dataInsert(`/api/follow-user/${userId}`);
-        console.log('lets see the backend worked or not');
+    }
+
+    const handleInterAction = async (id, userId, type) => {
+        console.log(id, userId, type);
+        await dataInsert(`/api/react-post/${type}/${id}/${userId}`)
+        console.log('check!');
     }
     return (
         <div className="w-[40rem] ">
@@ -57,7 +62,7 @@ const Posts = ({ post }) => {
                 <div className="p-3 rounded-md">
                     <div className="flex gap-3">
                         <div className="flex gap-2 items-center border p-2 rounded-lg">
-                            <button className="flex gap-2 p">
+                            <button onClick={() => handleInterAction(id, userId, 'like')} className="flex gap-2 p">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" viewBox="0 0 21 20" fill="#616161">
                                     <path d="M4.66536 12.918L10.4987 7.08464L16.332 12.918" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>

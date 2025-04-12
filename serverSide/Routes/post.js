@@ -27,12 +27,13 @@ insert.post("/react-post/:type/:postId/:userId", async (req, res) => {
     const reactType = req.params.type;
     const postId = req.params.postId;
     const userId = req.params.userId;
+    console.log(reactType, postId, userId);
     if (!reactType || !postId || !userId) {
         return res.send({ msg: 'Something went wrong. Please try again later.' })
     }
-    if (reactType !== 'like' || reactType !== 'dislike') {
-        return res.send('Unauthorized access request.')
-    }
+    // if (reactType !== 'like' || reactType !== 'dislike') { this line is the problem
+    //     return res.send('Unauthorized access request.')
+    // }
     const dataToInsert = {
         postId: postId,
         userId: userId,

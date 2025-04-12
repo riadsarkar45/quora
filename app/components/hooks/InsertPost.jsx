@@ -13,7 +13,7 @@ const InsertPosts = ({ children }) => {
         try {
             console.log(dataToInsert, 'insertion');
             const insertedResponse = await axios.post(api, dataToInsert);
-            console.log("Inserted:", insertedResponse.data.dataToInsert);
+            console.log("Inserted:", insertedResponse.data);
             console.log("Data to Insert:", dataToInsert);
         } catch (error) {
             console.error("Error inserting data:", error);
@@ -21,13 +21,17 @@ const InsertPosts = ({ children }) => {
     };
 
     const fetchApi = useCallback(async (api) => {
-        if (!api) return;
-        const res = await axios.get(api)
-        setFetchedData(res.data)
-        return res.data;
+        try {
+            if (!api) return;
+            const res = await axios.get(api)
+            setFetchedData(res.data)
+            return res.data;
+        } catch (error) {
+            console.log(error?.response?.data?.error || error.message);
+        }
     }, [axios])
 
-    
+
 
 
 
